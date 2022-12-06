@@ -23,19 +23,19 @@ public class UserController {
 
 	@GetMapping
 	public String getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "limit", defaultValue = "50") int limit,
-			@RequestParam(value = "sort", defaultValue = "desc", required = false) String sort) {
-		
+						   @RequestParam(value = "limit", defaultValue = "50") int limit,
+			               @RequestParam(value = "sort", defaultValue = "desc", required = false) String sort) {
+
 		return "get user was called with page = " + page + " and limit = " + limit + " and sort = " + sort;
 	}
 
 	@GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-		
+
 		if (users.containsKey(userId)) {
 			return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
 		}
-		
+
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
@@ -59,21 +59,23 @@ public class UserController {
 	}
 
 	@PutMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, 
-		        produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE },
-		        path= "/{userId}")
-	public UserRest updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails) {
-		
+			    produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, path = "/{userId}")
+	public UserRest updateUser(@PathVariable String userId,
+			@Valid @RequestBody UpdateUserDetailsRequestModel userDetails) {
+
 		UserRest storedUserDetails = users.get(userId);
 		storedUserDetails.setFirstName(userDetails.getFirstName());
 		storedUserDetails.setLastName(userDetails.getLastName());
-		
+
 		users.put(userId, storedUserDetails);
-		
+
 		return storedUserDetails;
 	}
 
-	@DeleteMapping
-	public String deleteUser() {
-		return "delete user was called";
+	@DeleteMapping(path = "{userId}")
+	public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+		users.remove(userId);
+		
+		return ResponseEntity.noContent().build();
 	}
 }
