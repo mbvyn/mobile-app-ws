@@ -1,5 +1,6 @@
 package com.mbvyn.app.ws.ui.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import com.mbvyn.app.ws.ui.model.response.UserRest;
@@ -15,7 +16,11 @@ public class UserController {
 		return "get user was called with page = " + page + " and limit = " + limit + " and sort = " + sort;
 	}
 
-	@GetMapping(path = "/{userId}")
+	@GetMapping(path = "/{userId}", 
+			produces = { 
+					MediaType.APPLICATION_XML_VALUE, 
+					MediaType.APPLICATION_JSON_VALUE
+					})
 	public UserRest getUser(@PathVariable String userId) {
 		
 		UserRest returnValue = new UserRest();
